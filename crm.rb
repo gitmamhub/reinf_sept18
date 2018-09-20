@@ -20,6 +20,7 @@ class CRM
   end
 
   def print_main_menu
+    puts "\n"
     puts '[1] Add a new contact'
     puts '[2] Modify an existing contact'
     puts '[3] Delete a contact'
@@ -63,7 +64,13 @@ class CRM
     print 'Enter a Note: '
     note = gets.chomp
 
-  Contact.create(first_name, last_name, email, note)
+  #Contact.create(first_name, last_name, email, note)
+  contact = Contact.create(
+  first_name: first_name,
+  last_name:  last_name,
+  email:      email,
+  note:       note
+)
   end
 
   def modify_existing_contact
@@ -96,27 +103,62 @@ class CRM
     puts "\n......The contact lists........\n"
 
     Contact.all.each do |contact|
-      puts ("#{ contact.full_name } #{ contact.email } #{ contact.notes }id: #{ contact.id }")
+      puts ("#{ contact.full_name } #{ contact.email } #{ contact.note} id: #{ contact.id }")
       end
    end
 
   def search_by_attribute    # search by attribute
     puts "By which attribute you want to search ? "
-    puts("<1>: first_name, <2>: last_name, <3>: email, <4>: notes ")
+    puts("<1>: first_name, <2>: last_name, <3>: email ")
 
-    new_attribute = gets
+    new_attribute = gets.to_i
 
-    Contact.find_by(new_attribute)
+      case new_attribute
+        when 1 then
+               puts "Input first_name: "
+               f_name = gets.chomp
+               f= Contact.find_by(first_name: f_name)
+               if f
+                 puts("Name found:#{f.full_name} ")
+               else
+                 puts("Not Found !!")
+               end
+        when 2 then
+               puts "Input last_name: "
+               l_name = gets.chomp
+               l = Contact.find_by(last_name: l_name)
+               if l
+               puts("Name found:#{l.full_name}")
+             else
+               puts("Not Found !!")
+             end
+        when 3 then
+               puts "Input email: "
+               n_email = gets.chomp
+               e = Contact.find_by(email: n_email)
+               if e
+               puts("Name found:#{e.full_name}")
+             else
+               puts("Not Found !!")
+             end
+        else
+
+      puts 'WRONG number selected !! '
+      end
+
+
+
+    # Contact.find_by(new_attribute)
 
   end
 
 
-end # CRM class definition ends here 
+end # CRM class definition ends here
 
-
+system('clear')
 
 a  = CRM.new
-a.add_new_contact
+a.main_menu
 
 at_exit do
   ActiveRecord::Base.connection.close
